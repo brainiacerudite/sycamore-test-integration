@@ -1,75 +1,57 @@
-# Nuxt Minimal Starter
+# Sycamore Data Fetching Assessment
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+A user directory implementation fetching data from JSONPlaceholder, built with Nuxt 4 and Tailwind CSS v4.
 
-## Setup
-
-Make sure to install dependencies:
+## ⚡ Quick Start
 
 ```bash
-# npm
+# 1. Clone the repo
+git clone https://github.com/brainiacerudite/sycamore-test-integration.git
+cd sycamore-test-integration
+
+# 2. Install dependencies
 npm install
 
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
+# 3. Run development server
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+## 🏗️ Architecture & Decisions
 
-Build the application for production:
+### 1. Logic Extraction (`composables/useUsers.ts`)
 
-```bash
-# npm
-npm run build
+I moved the fetching logic out of `index.vue` and into a composable.
 
-# pnpm
-pnpm build
+**Why**: It separates the "Business Logic" (fetching, error handling, state derivation) from the "Presentation."
 
-# yarn
-yarn build
+**Benefit**: The UI component stays dumb and focused only on rendering the current state.
 
-# bun
-bun run build
-```
+### 2. Data Strategy (`useFetch`)
 
-Locally preview production build:
+Used Nuxt's built-in `useFetch` instead of axios or native fetch.
 
-```bash
-# npm
-npm run preview
+- **Reactivity**: It gives us `status`, `error`, and `data` refs out of the box.
+- **Performance**: Enabled `{ lazy: true }` so navigation isn't blocked by network requests. The skeleton loader handles the visual transition.
 
-# pnpm
-pnpm preview
+### 3. State Management
 
-# yarn
-yarn preview
+I explicitly handle 4 distinct UI states to prevent "layout shift" or confusion:
 
-# bun
-bun run preview
-```
+- **Loading**: Skeleton UI (matches the card layout).
+- **Error**: Retry button (calls `refresh()`).
+- **Empty**: Specific check for `length === 0`.
+- **Success**: The grid view.
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+**Added Bonus**: I implemented a client-side Search Filter to make the UI feel interactive, rather than just dumping a static list of 10 users.
+
+### 4. Styling (Tailwind 4)
+
+Configured Tailwind CSS v4 using the Vite plugin (`@tailwindcss/vite`).
+
+**Why**: It's faster and requires zero configuration compared to v3.
+
+### 5. Type Safety
+
+Defined a strict `User` interface in `types/index.ts`.
+
+**Why**: To safely access nested properties like `user.company.name` without TypeScript shouting or runtime errors.
