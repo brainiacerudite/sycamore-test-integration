@@ -2,6 +2,12 @@
 
 A user directory implementation fetching data from JSONPlaceholder, built with Nuxt 4 and Tailwind CSS v4.
 
+## 🌐 Live Demo
+
+### **Live Demo:** [https://sycamore-test-integration.vercel.app/](https://sycamore-test-integration.vercel.app/)
+
+---
+
 ## ⚡ Quick Start
 
 ```bash
